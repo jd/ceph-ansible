@@ -6,17 +6,15 @@
 - name: include master multisite tasks
   include: master.yml
   when:
-    - rgw_zonemaster is defined
     - rgw_zonemaster
-  # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
+    - not rgw_zonesecondary
   static: False
 
 - name: include secondary multisite tasks
   include: secondary.yml
   when:
-    - rgw_zonesecondary is defined
+    - not rgw_zonemaster
     - rgw_zonesecondary
-  # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
   static: False
 
 # Continue with common tasks

@@ -18,12 +18,7 @@ More details:
 
 This will setup the realm, zonegroup and master zone and make them the defaults.  It will also reconfigure the specified RGW for use with the zone.
 
-1. Edit the Inventory File
-
-```
-[rgws]
-cluster0-rgw0 rgw_zone=us-east rgw_zonemaster=true
-```
+``
 1. Generate System Access and System Secret Keys
 
 ```
@@ -36,8 +31,11 @@ echo system_secret_key: $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 40 | h
 copy_admin_key: true
 # Enable Multisite support
 rgw_multisite: true
-rgw_realm: gold
-rgw_zonegroup: us
+rgw_zone: jupiter
+rgw_zonemaster: true
+rgw_zonegroup: solarsystem
+rgw_zone_user: zone.user
+rgw_realm: milkyway
 system_access_key: 6kWkikvapSnHyE22P7nO
 system_secret_key: MGecsMrWtKZgngOHZdrd6d3JxGO5CPWgT2lcnpSt
 ```
@@ -46,14 +44,7 @@ system_secret_key: MGecsMrWtKZgngOHZdrd6d3JxGO5CPWgT2lcnpSt
 
 1. Run the ceph-ansible playbook on your 1st cluster
 
-Note: If you have already installed a cluster with ceph-ansible, you can use the `rgw-configure.yml` playbook as a shortcut (Only runs the ceph-rgw role)
-
 ## Configuring the Secondary Zone in a Separate Cluster
-
-```
-[rgws]
-cluster1-rgw0 rgw_zone=us-west rgw_zonesecondary=true
-```
 
 1. Edit the RGW Group Vars
 
@@ -61,20 +52,23 @@ cluster1-rgw0 rgw_zone=us-west rgw_zonesecondary=true
 copy_admin_key: true
 # Enable Multisite support
 rgw_multisite: true
-rgw_realm: gold
-rgw_zonegroup: us
-rgw_pullhost: cluster1-rgw0.fqdn
+rgw_zone: mars
+rgw_zonesecondary: true
+rgw_zonegroup: solarsystem
+rgw_zone_user: zone.user
+rgw_realm: milkyway
 system_access_key: 6kWkikvapSnHyE22P7nO
 system_secret_key: MGecsMrWtKZgngOHZdrd6d3JxGO5CPWgT2lcnpSt
+rgw_pull_proto: http
+rgw_pull_port: 8080
+rgw_pullhost: cluster1-rgw0.fqdn
 ```
 
 **Note:** pullhost should be the host of the RGW that is configured as the Zone Master
-**Note:** system_access_key and system_secret_key should match what you used in the 1st cluster
+**Note:** rgw_zone_user, system_access_key, and system_secret_key should match what you used in the 1st cluster
 
 
 1. Run the ceph-ansible playbook on your 2nd cluster
-
-Note: If you have already installed a cluster with ceph-ansible, you can use the `rgw-configure.yml` playbook as a shortcut (Only runs the ceph-rgw role)
 
 ## Conclusion
 

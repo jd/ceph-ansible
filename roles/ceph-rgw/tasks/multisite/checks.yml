@@ -21,7 +21,7 @@
   check_mode: no
 
 - name: check if the system user already exists
-  command: radosgw-admin user info --uid=zone.user
+  command: radosgw-admin user info --uid={{ rgw_zone_user }}
   register: usercheck
   failed_when: False
   changed_when: False

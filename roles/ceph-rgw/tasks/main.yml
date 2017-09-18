@@ -16,19 +16,24 @@
   # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
   static: False
 
+- name: include rgw_pool_pgs.yml
+  include: rgw_pool_pgs.yml
+  when:
+    - create_pools is defined
+  static: False
+
+- name: include rgw multisite playbooks
+  include: multisite/main.yml
+  when:
+    - rgw_multisite
+    - ceph_release_num[ceph_release] >= ceph_release_num.jewel
+  # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
+  static: False
+
 - name: include start_radosgw.yml
   include: start_radosgw.yml
   when:
     - not containerized_deployment
-  # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
-  static: False
-
-- name: include multisite/main.yml
-  include: multisite/main.yml
-  when:
-    - rgw_zone != ""
-    - rgw_multisite
-    - ceph_release_num[ceph_release] >= ceph_release_num.jewel
   # Hard code this so we will skip the entire file instead of individual tasks (Default isn't Consistent)
   static: False
 
